@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -83,5 +84,44 @@ class ColourTest {
     void test_name() {
         assertEquals("RED", Colour.RED.name());
         assertEquals("YELLOW", Colour.valueOf("YELLOW").name());
+    }
+
+    @Test
+    void test_clone_not_supported() {
+        assertThrows(CloneNotSupportedException.class, () -> Colour.valueOf(BLACK).clone());
+    }
+
+    @Test
+    void test_serialization_deserialization() throws IOException, ClassNotFoundException {
+        serialize(Colour.valueOf(BLACK));
+        Colour black = deserialize();
+
+        assertNotNull(black);
+        assertEquals(Colour.valueOf(BLACK), black);
+        assertSame(Colour.valueOf(BLACK), black);
+
+        serialize(Colour.RED);
+        Colour red = deserialize();
+
+        assertNotNull(red);
+        assertEquals(Colour.valueOf(RED), red);
+        assertSame(Colour.valueOf(RED), red);
+
+        assertEquals(Colour.RED, red);
+        assertSame(Colour.RED, red);
+    }
+
+    void serialize(Colour colour) throws IOException {
+        try (FileOutputStream fos = new FileOutputStream("data.obj");
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+            oos.writeObject(colour);
+        }
+    }
+
+    Colour deserialize() throws IOException, ClassNotFoundException {
+        try (FileInputStream fis = new FileInputStream("data.obj");
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            return (Colour) ois.readObject();
+        }
     }
 }

@@ -3,6 +3,10 @@ package dev.darshit.dynamic;
 import dev.darshit.db.ColourDB;
 import dev.darshit.db.DB;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
@@ -10,7 +14,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class Colour implements Comparable<Colour> {
+public final class Colour implements Comparable<Colour>, Serializable {
 
     public static final Colour RED = new Colour("RED", 255, 0, 0, 0);
     public static final Colour GREEN = new Colour("GREEN", 0, 255, 0, 1);
@@ -121,5 +125,24 @@ public final class Colour implements Comparable<Colour> {
                 ", b=" + b +
                 ", ordinal=" + ordinal +
                 '}';
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        throw new CloneNotSupportedException();
+    }
+
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject();
+        oos.writeObject(this.name());
+    }
+
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+        Colour.valueOf((String) ois.readObject());
+    }
+
+    private Object readResolve() {
+        return Colour.valueOf(colourName);
     }
 }
