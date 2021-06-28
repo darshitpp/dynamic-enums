@@ -132,16 +132,6 @@ public final class Colour implements Comparable<Colour>, Serializable {
         throw new CloneNotSupportedException();
     }
 
-    private void writeObject(ObjectOutputStream oos) throws IOException {
-        oos.defaultWriteObject();
-        oos.writeObject(this.name());
-    }
-
-    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
-        ois.defaultReadObject();
-        Colour.valueOf((String) ois.readObject());
-    }
-
     private Object readResolve() {
         return Colour.valueOf(colourName);
     }
