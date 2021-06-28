@@ -3,6 +3,7 @@ package dev.darshit.dynamic;
 import dev.darshit.db.ColourDB;
 import dev.darshit.db.ColourDBImpl;
 import dev.darshit.db.DB;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -12,6 +13,8 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,6 +27,7 @@ class ColourTest {
     public static final String WHITE = "WHITE";
     public static final String YELLOW = "YELLOW";
     public static final String RED = "RED";
+    private static final String DATA_OBJ = "data.obj";
 
     @Mock
     ColourDBImpl colourDB;
@@ -38,6 +42,12 @@ class ColourTest {
         ColourDB.ColourData white = new ColourDB.ColourData(WHITE, 0, 0, 0, 4);
         ColourDB.ColourData yellow = new ColourDB.ColourData(YELLOW, 255, 255, 0, 5);
         Mockito.when(colourDB.getColours()).thenReturn(List.of(black, white, yellow));
+    }
+
+    @AfterAll
+    void tearDown() throws IOException {
+        boolean deleteIfExists = Files.deleteIfExists(Path.of(DATA_OBJ));
+        System.out.println(deleteIfExists ? "File " + DATA_OBJ + " deleted" : "File not deleted");
     }
 
     @Test
@@ -112,14 +122,14 @@ class ColourTest {
     }
 
     void serialize(Colour colour) throws IOException {
-        try (FileOutputStream fos = new FileOutputStream("data.obj");
+        try (FileOutputStream fos = new FileOutputStream(DATA_OBJ);
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(colour);
         }
     }
 
     Colour deserialize() throws IOException, ClassNotFoundException {
-        try (FileInputStream fis = new FileInputStream("data.obj");
+        try (FileInputStream fis = new FileInputStream(DATA_OBJ);
              ObjectInputStream ois = new ObjectInputStream(fis)) {
             return (Colour) ois.readObject();
         }
