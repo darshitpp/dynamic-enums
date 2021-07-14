@@ -53,6 +53,9 @@ class ColourTest {
     @Test
     void test_values() {
         Colour[] values = Colour.values();
+
+        assertEquals(Colour.RED.name(), values[0].name());
+        assertEquals(Colour.valueOf(YELLOW).name(), values[values.length - 1].name());
         assertTrue(Arrays.stream(values).anyMatch(colour -> colour.name().equals(Colour.RED.name())));
         assertTrue(Arrays.stream(values).anyMatch(colour -> colour.name().equals(Colour.valueOf(WHITE).name())));
         assertEquals(6, values.length);

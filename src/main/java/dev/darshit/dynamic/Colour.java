@@ -3,9 +3,6 @@ package dev.darshit.dynamic;
 import dev.darshit.db.ColourDB;
 import dev.darshit.db.DB;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -41,7 +38,7 @@ public final class Colour implements Comparable<Colour>, Serializable {
     }
 
     public static Colour[] values() {
-        return map.values().toArray(new Colour[0]).clone();
+        return map.values().stream().sorted().toArray(Colour[]::new).clone();
     }
 
     public static Colour valueOf(String name) {
