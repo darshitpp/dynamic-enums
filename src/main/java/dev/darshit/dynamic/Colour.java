@@ -5,11 +5,7 @@ import dev.darshit.db.DB;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 
 public final class Colour implements Comparable<Colour>, Serializable {
 
@@ -17,7 +13,7 @@ public final class Colour implements Comparable<Colour>, Serializable {
     public static final Colour GREEN = new Colour("GREEN", 0, 255, 0, 1);
     public static final Colour BLUE = new Colour("BLUE", 0, 0, 255, 2);
 
-    private static final Map<String, Colour> map = new ConcurrentHashMap<>();
+    private static final Map<String, Colour> map = new LinkedHashMap<>();
 
     static {
         loadClassData();
@@ -38,7 +34,7 @@ public final class Colour implements Comparable<Colour>, Serializable {
     }
 
     public static Colour[] values() {
-        return map.values().stream().sorted().toArray(Colour[]::new).clone();
+        return map.values().toArray(Colour[]::new).clone();
     }
 
     public static Colour valueOf(String name) {
